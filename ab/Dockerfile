@@ -1,9 +1,11 @@
-FROM alpine:3.6
+FROM alpine:latest
 
 LABEL maintainer="aabishkar@gmail.com"
 
-RUN apk --update --no-cache add apache2-utils
+RUN apk --no-cache add apache2-utils
 
-ENTRYPOINT [ "/usr/bin/ab" ]
+WORKDIR /usr/ab/
+
+ENTRYPOINT ["/usr/bin/ab"]
 
 CMD ["-h"]
