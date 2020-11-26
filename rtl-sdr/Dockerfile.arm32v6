@@ -1,4 +1,8 @@
-FROM alpine:latest as builder
+FROM arm32v6/alpine:latest as builder
+
+RUN apk add --no-cache curl && \
+    curl -L https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz | tar zxvf - -C . && \
+    mv qemu-3.0.0+resin-arm/qemu-arm-static /usr/bin
 
 RUN apk add --no-cache alpine-sdk cmake git libusb-dev; \
     git clone --single-branch --progress git://git.osmocom.org/rtl-sdr.git /usr/local/rtl-sdr; \
@@ -8,10 +12,11 @@ RUN apk add --no-cache alpine-sdk cmake git libusb-dev; \
     make; \
     make install
 
-FROM alpine:latest
+FROM arm32v6/alpine:latest
 
 LABEL maintainer="aabishkar@gmail.com"
 
+COPY --from=builder /usr/bin/qemu-arm-static /usr/bin
 COPY --from=builder /usr/local /usr/local
 
 RUN apk add --no-cache libusb
