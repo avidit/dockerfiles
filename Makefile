@@ -1,5 +1,5 @@
 REGISTRY ?= localhost:5000
-IMAGES ?= $(shell find . -name '*Dockerfile' -print0 | xargs -0 -n1 dirname | cut -c 3- | sort)
+IMAGES ?= $(shell find . -name 'Dockerfile*' -print0 | xargs -0 -n1 dirname | cut -c 3- | sort)
 TAG ?= $(shell git log -1 --pretty=format:%h)
 
 .DEFAULT_GOAL := help
@@ -10,6 +10,7 @@ TAG ?= $(shell git log -1 --pretty=format:%h)
 	list-images \
 	remove \
 	build \
+	build-arm \
 	tag \
 	tag-latest \
 	push
@@ -34,7 +35,12 @@ remove: ## remove all the images. For selected images: make remove -e IMAGES=ima
 
 build: ## builds all the images. For selected images: make build -e IMAGES="image_a image_b"
 	@for image in $(IMAGES); do \
-		docker build --rm $(BUILD_ARGS) -t $$image -f $$image/*Dockerfile $$image; \
+		docker build --rm $(BUILD_ARGS) -t $$image -f $$image/Dockerfile $$image; \
+	done
+
+build-arm: ## builds all the arm images. For selected images: make build -e IMAGES="image_a image_b"
+	@for image in $(IMAGES); do \
+		docker build --rm $(BUILD_ARGS) -t $$image:arm -f $$image/Dockerfile.arm* $$image; \
 	done
 
 tag: ## tag all the images. For selected image with desired tag: make tag -e IMAGES=image -e TAG=tag
