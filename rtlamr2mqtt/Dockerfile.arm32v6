@@ -11,7 +11,7 @@ RUN apk add --no-cache --virtual build-deps alpine-sdk cmake git libusb-dev; \
 RUN apk add --no-cache git go libc-dev && \
     mkdir -p /tmp/go && \
     export GOPATH=/tmp/go && \
-    go get -v github.com/bemasher/rtlamr && \
+    go install -v github.com/bemasher/rtlamr@latest && \
     cp /tmp/go/bin/* /usr/local/bin/
 
 FROM arm32v6/alpine:latest
