@@ -10,9 +10,8 @@ TAG ?= $(shell git log -1 --pretty=format:%h)
 	list-images \
 	remove \
 	build \
-	build-arm \
+	build-arm32v6 \
 	tag \
-	tag-latest \
 	push
 
 help: ## print this help message
@@ -38,9 +37,9 @@ build: ## builds all the images. For selected images: make build -e IMAGES="imag
 		docker build --rm $(BUILD_ARGS) -t $$image -f $$image/Dockerfile $$image; \
 	done
 
-build-arm: ## builds all the arm images. For selected images: make build -e IMAGES="image_a image_b"
+build-arm32v6: ## builds all the arm32v6 images. For selected images: make build -e IMAGES="image_a image_b"
 	@for image in $(IMAGES); do \
-		docker build --rm $(BUILD_ARGS) -t $$image:arm -f $$image/Dockerfile.arm* $$image; \
+		docker build --rm $(BUILD_ARGS) -t $$image:arm32v6 -f $$image/Dockerfile.arm32v6 $$image; \
 	done
 
 tag: ## tag all the images. For selected image with desired tag: make tag -e IMAGES=image -e TAG=tag
@@ -48,12 +47,7 @@ tag: ## tag all the images. For selected image with desired tag: make tag -e IMA
 		docker tag $$image $(REGISTRY)/$$image:$(TAG); \
 	done
 
-tag-latest: ## tag all the images with 'latest' tag. For selected images: make tag -e IMAGES=image
-	@for image in $(IMAGES); do \
-		docker tag $$image $(REGISTRY)/$$image:latest; \
-	done
-
 push: ## push all the images to the registry/ For selected images: make push -e REGISRTY=registry -e IMAGES=image
 	@for image in $(IMAGES); do \
-		docker push $(REGISTRY)/$$image:latest; \
+		docker push $(REGISTRY)/$$image --all-tags; \
 	done

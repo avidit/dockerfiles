@@ -1,4 +1,4 @@
-FROM alpine:latest as builder
+FROM alpine:3.17 as builder
 
 RUN apk add --no-cache alpine-sdk cmake git libusb-dev; \
     git clone --single-branch --progress git://git.osmocom.org/rtl-sdr.git /usr/local/rtl-sdr; \
@@ -8,7 +8,7 @@ RUN apk add --no-cache alpine-sdk cmake git libusb-dev; \
     make; \
     make install
 
-FROM alpine:latest
+FROM alpine:3.17
 
 LABEL maintainer="aabishkar@gmail.com"
 

@@ -1,4 +1,4 @@
-FROM arm32v6/golang:alpine as builder
+FROM arm32v6/golang:1.19-alpine3.17 as builder
 
 RUN apk add --no-cache curl && \
     curl -L https://github.com/balena-io/qemu/releases/download/v3.0.0%2Bresin/qemu-3.0.0+resin-arm.tar.gz | tar zxvf - -C . && \
@@ -7,10 +7,10 @@ RUN apk add --no-cache curl && \
 RUN apk add --no-cache git go libc-dev && \
     mkdir -p /tmp/go && \
     export GOPATH=/tmp/go && \
-    go install -v github.com/bemasher/rtlamr@latest && \
+    go install -v github.com/bemasher/rtlamr@v0.9.3 && \
     cp /tmp/go/bin/* /usr/local/bin/
 
-FROM arm32v6/alpine:latest
+FROM arm32v6/alpine:3.17
 
 LABEL maintainer="aabishkar@gmail.com"
 
